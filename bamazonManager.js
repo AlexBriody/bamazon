@@ -69,8 +69,17 @@ function listProducts() {
 }
 
 function viewLowInventory() {
-    console.log("We are going to view low inventory!");
-    connection.end();
+    
+    var query = "SELECT * FROM products WHERE stock_quantity <50";
+    connection.query(query, function(err, res){
+        if (err) throw err;
+
+    console.log("\nAll products with low inventory:");
+    for (var i=0; i< res.length; i++) {
+        console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity)
+    }
+    connection.end();   
+    });
 }
 
 function addInventory() {
