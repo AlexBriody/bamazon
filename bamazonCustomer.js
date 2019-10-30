@@ -61,9 +61,10 @@ function buyProducts() {
     connection.query(query, [answer.productID], function (err, res) {
 
       for (var i=0; i < res.length; i++) {
+
         if(res[i].stock_quantity < answer.productUnits) {
           console.log("\n Your quantity exceeds the amount in stock. Please choose another quantity.")
-          connection.end();
+          buyProducts();
         } else {
           console.log("\nYour order has been fulfilled.");
           console.log("\nOrder Summary:");
@@ -75,6 +76,7 @@ function buyProducts() {
           console.log("The new updated stock quantity of " + res[i].product_name + " is " + newStockQuantity);
           connection.end();
         }//closing for else statement
+
       }//closing for for loop
 
     })//closing for connection.query
