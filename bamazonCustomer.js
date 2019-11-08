@@ -66,6 +66,7 @@ function buyProducts() {
           console.log("\n Your quantity exceeds the amount in stock. Please choose another quantity.")
           buyProducts();
         } else {
+          
           console.log("\nYour order has been fulfilled.");
           console.log("\nOrder Summary:");
           console.log("You have purchased " + answer.productUnits + " of " + res[i].product_name);
@@ -74,11 +75,40 @@ function buyProducts() {
           console.log("Your total cost is $" + formattedCost);
           var newStockQuantity = res[i].stock_quantity - answer.productUnits;
           console.log("The new updated stock quantity of " + res[i].product_name + " is " + newStockQuantity);
-          connection.end();
+          connection.query(
+            "UPDATE products SET ? WHERE ?",
+            [
+              {
+                stock_quantity: newStockQuantity
+              },
+              {
+                product_name: res[i].product_name 
+              }
+            ],
+            function(error) {
+              if (error) throw err;
+              
+            }
+          );
+          // connection.end();
         }//closing for else statement
 
       }//closing for for loop
 
+      listProducts();
+      function listProducts() {
+
+        connection.query("SELECT * FROM products", function (err, res) {
+            if (err) throw err;
+            console.log("\nAll products for sale:");
+            for (var i = 0; i < res.length; i++) {
+                console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity);
+            }
+            console.log("-----------------------------------");
+            connection.end();
+        });
+    
+    }
     })//closing for connection.query
 
   });//closing for .then
